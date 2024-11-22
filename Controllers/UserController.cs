@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Blazor_Server_App_Login.Login;
 using Blazor_Server_App_Login.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Blazor_Server_App_Login.Controllers
 {
@@ -25,7 +26,8 @@ namespace Blazor_Server_App_Login.Controllers
             {
                 if (login.password != null)
                 {
-                    var user = await _context.UserLogins.FindAsync(login.email, login.password);
+                    var user = await _context.UsersLogin.Where(a => a.email.Equals(login.email) && a.password.Equals(login.password)).FirstOrDefaultAsync();
+                    //var user = await _context.UserLogins.FindAsync(login.email, login.password);
                     if (user != null)
                     {
                         sessionState.Name = "Admin";

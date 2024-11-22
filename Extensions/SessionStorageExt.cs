@@ -1,5 +1,4 @@
 ﻿using Blazored.SessionStorage;
-using System.Runtime.CompilerServices;
 using System.Text.Json;
 
 namespace Blazor_Server_App_Login.Extensions
@@ -25,7 +24,7 @@ namespace Blazor_Server_App_Login.Extensions
                 return item;
             }
             else
-                { return null; }
+                 return null;
         }
     }
 }

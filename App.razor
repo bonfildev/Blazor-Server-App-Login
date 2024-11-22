@@ -10,7 +10,7 @@
                     @{
                         if(context.User.Identity?.IsAuthenticated != true)
                         {
-                        navManager.NavigateTo("/");
+                            navManager.NavigateTo("/");
                         }
                         else
                         {

@@ -37,7 +37,6 @@
         var loginResponse = await httpClient.PostAsJsonAsync<UserLogin>("https://localhost:7146/api/User/Login", login);
         if (loginResponse.IsSuccessStatusCode)
         {
-            // AuthenticationStateProvider i = new AuthenticationExt();
             var sesionUser = await loginResponse.Content.ReadFromJsonAsync<SessionState>();
             var autenticationExt = (AuthenticationExt)authenticationProvider;
             await autenticationExt.UdateAuthState(sesionUser);

@@ -14,14 +14,13 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddHttpClient();
 builder.Services.AddBlazoredSessionStorage();
-builder.Services.AddScoped<AuthenticationStateProvider, AuthenticationExt>();
-builder.Services.AddScoped<AuthenticationExt>();
 // Add MVC Controllers
 builder.Services.AddControllers();
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
+builder.Services.AddScoped<AuthenticationStateProvider, AuthenticationExt>();
 builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

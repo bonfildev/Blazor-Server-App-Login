@@ -1,7 +1,8 @@
 ﻿@inherits LayoutComponentBase
 @using Blazor_Server_App_Login.Extensions;
+@using Blazor_Server_App_Login.Login
 @using Microsoft.AspNetCore.Components.Authorization;
-@inject AuthenticationStateProvider authenticacionProvider
+@inject AuthenticationStateProvider authenticationProvider
 @inject NavigationManager navManager
 
 <PageTitle>Blazor-Server-App-Login</PageTitle>
@@ -13,6 +14,7 @@
 
     <main>
         <div class="top-row px-4">
+            <span>Welcome @sessionState.email</span>
             <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
             <a @onclick="CloseSession" href="javascript:void(0)">Salir</a>
         </div>
@@ -25,8 +27,27 @@
 @code{
     private async Task CloseSession()
     {
-        var authenticationExt = (AuthenticationExt)authenticacionProvider;
+        var authenticationExt = (AuthenticationExt)authenticationProvider;
         await authenticationExt.UdateAuthState(null);
         navManager.NavigateTo("/", true);
+    }
+
+    public SessionState sessionState = new();
+    protected override async Task OnInitializedAsync()
+    {
+        await GetLocalStorageSession();
+    }
+    private async Task<SessionState> GetLocalStorageSession()
+    {
+        var autenticationExt = (AuthenticationExt)authenticationProvider;
+        var actualSession = await autenticationExt.GetAuthenticationStateAsync();
+        var ClaimList = actualSession.User.Claims.ToList();
+        if (ClaimList.Count != 0)
+        {
+            sessionState.Name = ClaimList[0].Value.ToString();
+            sessionState.email = ClaimList[1].Value.ToString();
+            sessionState.Profile = ClaimList[2].Value.ToString();
+        }
+        return sessionState;
     }
 }

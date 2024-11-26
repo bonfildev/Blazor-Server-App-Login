@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace Blazor_Server_App_Login.Login
+namespace Blazor_Server_App_Login.Models
 {
     public class UserLogin
     {

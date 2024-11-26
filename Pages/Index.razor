@@ -12,7 +12,6 @@
 
 Welcome to your new app.
 <br />
-<span runat="server">@sessionState.email</span>
 <AuthorizeView>
     <Authorized>
         <h1>Welcome @context.User.Identity!.Name</h1>
@@ -24,16 +23,19 @@ Welcome to your new app.
 
     protected override async Task OnInitializedAsync()
     {
-        await GetLocalStorageSession();
+       await GetLocalStorageSession();
     }
     private async Task<SessionState> GetLocalStorageSession()
     {
         var autenticationExt = (AuthenticationExt)authenticationProvider;
         var actualSession = await autenticationExt.GetAuthenticationStateAsync();
         var ClaimList= actualSession.User.Claims.ToList();
-        sessionState.Name = ClaimList[0].Value.ToString();
-        sessionState.email = ClaimList[1].Value.ToString();
-        sessionState.Profile = ClaimList[2].Value.ToString();
+        if (ClaimList.Count != 0)
+        {
+            sessionState.Name = ClaimList[0].Value.ToString();
+            sessionState.email = ClaimList[1].Value.ToString();
+            sessionState.Profile = ClaimList[2].Value.ToString();
+        }
         return sessionState;
     }
 }

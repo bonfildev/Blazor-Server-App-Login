@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Blazor_Server_App_Login.Login;
 using Blazor_Server_App_Login.Data;
 using Microsoft.EntityFrameworkCore;
+using Blazor_Server_App_Login.Models;
 
 namespace Blazor_Server_App_Login.Controllers
 {
@@ -36,9 +37,23 @@ namespace Blazor_Server_App_Login.Controllers
                     }
                 }
             }
-
-
             return StatusCode(StatusCodes.Status200OK, sessionState);
+        }
+        [HttpPost]
+        [Route("Register")]
+        public async Task<IActionResult> Register([FromBody] UserLogin register)
+        {
+
+            if (register.email != null && register.password != null )
+            {
+                if (ModelState.IsValid)
+                {
+                    _context.Add(register);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+            return StatusCode(StatusCodes.Status200OK);
         }
     }
 }

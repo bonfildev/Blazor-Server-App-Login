@@ -19,6 +19,7 @@ public partial class BlazorServerAppContext : DbContext
 
     public virtual DbSet<SuperDigito> SuperDigitos { get; set; }
 
+    public virtual DbSet<UsersLogin> UsersLogins { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
@@ -57,7 +58,24 @@ public partial class BlazorServerAppContext : DbContext
                 .HasConstraintName("FK_SuperDigito_AspNetUsers");
         });
 
-        
+        modelBuilder.Entity<UsersLogin>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_UserLogin");
+
+            entity.ToTable("UsersLogin");
+
+            entity.HasIndex(e => e.Email, "IX_UsersLogin").IsUnique();
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Email)
+                .HasMaxLength(450)
+                .IsUnicode(false)
+                .HasColumnName("email");
+            entity.Property(e => e.Password)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("password");
+        });
 
         OnModelCreatingPartial(modelBuilder);
     }

@@ -10,7 +10,7 @@ namespace Blazor_Server_App_Login.Data
             : base(options)
         {
         }
-        public DbSet<UserLogin> UsersLogin { get; set; } = default!;
+        public DbSet<UsersLogin> UsersLogin { get; set; } = default!;
 
     }
     

@@ -6,8 +6,6 @@
 @using Blazor_Server_App_Login.Shared
 @using Blazor_Server_App_Login.Login
 @using Blazor_Server_App_Login.Models
-@using Microsoft.AspNetCore.Components.Authorization
-@inject AuthenticationStateProvider authenticationProvider
 @inject NavigationManager navManager
 
 <div class="row mt-5">
@@ -17,15 +15,15 @@
         </div>
         <div class="mb-3">
             <label>Email</label>
-            <input @bind="Login.email" class="form-control" />
+            <input @bind="Login.Email" class="form-control" />
         </div>
         <div class="mb-3">
             <label>Password</label>
-            <input type="password" @bind="Login.password" class="form-control" />
+            <input type="password" @bind="Login.Password" class="form-control" />
         </div>
         <div class="mb-3">
             <label>Confirm Password</label>
-            <input type="password"  class="form-control" />
+            <input type="password" id="Repeat" @bind="Login.repeatPassword" class="form-control" />
         </div>
         <div class="mb-3">
             <button @onclick="RegisterUser" class="btn btn-primary">Confirm</button>
@@ -34,19 +32,24 @@
     </div>
 
 </div>
+<div style="display:none" id="blazor-error-ui" class="m-2 border border-2 border-dark rounded-3 m-2 p-3">
+    The password does not match
+</div>
+
 
 @code {
-    private UserLogin Login = new UserLogin();
+    private UsersLogin Login = new UsersLogin();
     private async Task RegisterUser()
     {
-        var loginResponse = await httpClient.PostAsJsonAsync<UserLogin>("https://localhost:7146/api/User/Register", Login);
-        if (loginResponse.IsSuccessStatusCode)
+        if (Login.Password == Login.repeatPassword)
         {
-            var sesionUser = await loginResponse.Content.ReadFromJsonAsync<SessionState>();
-            var autenticationExt = (AuthenticationExt)authenticationProvider;
-            await autenticationExt.UdateAuthState(sesionUser);
-            navManager.NavigateTo("/Index");
+            var loginResponse = await httpClient.PostAsJsonAsync<UsersLogin>("https://localhost:7146/api/User/Register", Login);
+            if (loginResponse.IsSuccessStatusCode)
+            {
+                navManager.NavigateTo("/");
+            }
         }
+
     }
     private async Task RegistrarUsuario()
     {

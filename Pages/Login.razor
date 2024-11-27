@@ -17,11 +17,11 @@
         </div>
         <div class="mb-3">
             <label>Email</label>
-            <input @bind="login.email" class="form-control" />
+            <input @bind="login.Email" class="form-control" />
         </div>
         <div class="mb-3">
             <label>Password</label>
-            <input type="password" @bind="login.password" class="form-control" />
+            <input type="password" @bind="login.Password" class="form-control" />
         </div>
         <div class="mb-3">
             <button @onclick="IniciarSesion" class="btn btn-primary">Login</button>
@@ -35,10 +35,10 @@
 </div>
 
 @code {
-    private UserLogin login = new UserLogin();
+    private UsersLogin login = new UsersLogin();
     private async Task IniciarSesion()
     {
-        var loginResponse = await httpClient.PostAsJsonAsync<UserLogin>("https://localhost:7146/api/User/Login", login);
+        var loginResponse = await httpClient.PostAsJsonAsync<UsersLogin>("https://localhost:7146/api/User/Login", login);
         if (loginResponse.IsSuccessStatusCode)
         {
             var sesionUser = await loginResponse.Content.ReadFromJsonAsync<SessionState>();

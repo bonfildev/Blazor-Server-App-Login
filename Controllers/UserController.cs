@@ -19,20 +19,20 @@ namespace Blazor_Server_App_Login.Controllers
 
         [HttpPost]
         [Route("Login")]
-        public async Task<IActionResult> Login([FromBody] UserLogin login)
+        public async Task<IActionResult> Login([FromBody] UsersLogin login)
         {
             SessionState sessionState = new SessionState();
 
-            if (login.email != null)
+            if (login.Email != null)
             {
-                if (login.password != null)
+                if (login.Password != null)
                 {
-                    var user = await _context.UsersLogin.Where(a => a.email.Equals(login.email) && a.password.Equals(login.password)).FirstOrDefaultAsync();
+                    var user = await _context.UsersLogin.Where(a => a.Email.Equals(login.Email) && a.Password.Equals(login.Password)).FirstOrDefaultAsync();
                     //var user = await _context.UserLogins.FindAsync(login.email, login.password);
                     if (user != null)
                     {
                         sessionState.Name = "Admin";
-                        sessionState.email = login.email;
+                        sessionState.email = login.Email;
                         sessionState.Profile = "Admin";
                     }
                 }
@@ -41,19 +41,19 @@ namespace Blazor_Server_App_Login.Controllers
         }
         [HttpPost]
         [Route("Register")]
-        public async Task<IActionResult> Register([FromBody] UserLogin register)
+        public async Task<IActionResult> Register([FromBody] UsersLogin register)
         {
 
-            if (register.email != null && register.password != null )
+            if (register.Email != null && register.Password != null )
             {
                 if (ModelState.IsValid)
                 {
                     _context.Add(register);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
+                    return StatusCode(StatusCodes.Status200OK);
                 }
             }
-            return StatusCode(StatusCodes.Status200OK);
+            return StatusCode(StatusCodes.Status500InternalServerError);
         }
     }
 }

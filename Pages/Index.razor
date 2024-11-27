@@ -35,6 +35,7 @@ Welcome to your new app.
             sessionState.Name = ClaimList[0].Value.ToString();
             sessionState.email = ClaimList[1].Value.ToString();
             sessionState.Profile = ClaimList[2].Value.ToString();
+            sessionState.ID = Int16.Parse(ClaimList[3].Value.ToString());
         }
         return sessionState;
     }

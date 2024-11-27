@@ -1,0 +1,132 @@
+﻿@page "/SuperDigito"
+@using Microsoft.AspNetCore.Authorization
+@using Blazor_Server_App_Login.Models
+@using Blazor_Server_App_Login.Interfaces
+@using Blazor_Server_App_Login.Extensions
+@inject NavigationManager navManager
+@inject HttpClient httpClient
+@inject ISDigito isDigito
+@inject AuthenticationStateProvider authenticationProvider
+@using Blazor_Server_App_Login.Login
+@attribute [Authorize(Roles = "Admin")]
+
+<PageTitle>Super Digito</PageTitle>
+
+<h1>Super Digito</h1>
+<div class="row mt-5">
+    <div class="col-lg-4 offset-lg-4 border">
+        <div class="mb-3 text-center">
+            <h3>Super Digito</h3>
+        </div>
+        <div class="mb-3">
+            <label>Ingresa un Numero para calcular el Super Digito</label>
+            <input @bind="sd.Number" class="form-control" />
+        </div>
+        <div class="mb-3">
+            @* <button @onclick="CalcSuperDigito" class="btn btn-primary">Confirm</button>  *@
+            <button class="btn-primary" @onclick="@(async () => await CalcSuperDigito())">Confirm</button>
+            <button class="btn-primary" @onclick="@(async () => await BorrarRegistros())">Clear Table</button>
+        </div>
+
+    </div>
+</div>
+
+
+<div class="navbar-menu">
+    @*Menu Items from the database*@
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    ID
+                </th>
+                <th>
+                    UserID 
+                </th>
+                <th>
+                    Number
+                </th>
+                <th>
+                    Result
+                </th>
+                <th>
+                    Date
+                </th>
+            </tr>
+        </thead>
+    @foreach (sDigito item in superdigito)
+    {
+            <tr>
+                <td>
+                    @item.Id
+                </td>
+                <td>
+                    @item.UserId
+                </td>
+                <td>
+                    @item.Number
+                </td>
+                <td>
+                    @item.Result
+                </td>
+                <td>
+                    @item.Date
+                </td>
+            </tr>
+    }
+    </table>
+</div>
+
+
+
+@code {
+    private sDigito sd = new sDigito();
+    public SessionState sessionState = new();
+    private async Task CalcSuperDigito()
+    {
+        sd.UserId = sessionState.ID;
+        var loginResponse = await httpClient.PostAsJsonAsync<sDigito>("https://localhost:7146/api/User/SDigito", sd);
+        if (loginResponse.IsSuccessStatusCode)
+        {
+            navManager.NavigateTo("/SuperDigito",true);
+        }
+    }
+    private async Task BorrarRegistros()
+    {
+        int UserID = sessionState.ID;
+        var loginResponse = await httpClient.PostAsJsonAsync("https://localhost:7146/api/User/BorrarSDigito", UserID);
+        if (loginResponse.IsSuccessStatusCode)
+        {
+            navManager.NavigateTo("/SuperDigito", true);
+        }
+    }
+    public List<sDigito> superdigito = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        ReadOptions();
+        await GetLocalStorageSession();
+    }
+
+    private void ReadOptions()
+    {
+        superdigito = isDigito.Options;
+    }
+
+    private async Task<SessionState> GetLocalStorageSession()
+    {
+        var autenticationExt = (AuthenticationExt)authenticationProvider;
+        var actualSession = await autenticationExt.GetAuthenticationStateAsync();
+        var ClaimList = actualSession.User.Claims.ToList();
+        if (ClaimList.Count != 0)
+        {
+            sessionState.Name = ClaimList[0].Value.ToString();
+            sessionState.email = ClaimList[1].Value.ToString();
+            sessionState.Profile = ClaimList[2].Value.ToString();
+            sessionState.ID = Int16.Parse(ClaimList[3].Value.ToString());
+        }
+        return sessionState;
+    }
+
+
+}

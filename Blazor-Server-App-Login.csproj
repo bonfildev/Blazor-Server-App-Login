@@ -9,6 +9,8 @@
 
   <ItemGroup>
     <Compile Remove="Controllers\UsuarioController.cs" />
+    <Compile Remove="Migrations\20241120235515_Initial.cs" />
+    <Compile Remove="Migrations\20241120235515_Initial.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -11,6 +11,7 @@ namespace Blazor_Server_App_Login.Data
         {
         }
         public DbSet<UsersLogin> UsersLogin { get; set; } = default!;
+        public DbSet<sDigito> SDigito { get; set; } = default!;
 
     }
     

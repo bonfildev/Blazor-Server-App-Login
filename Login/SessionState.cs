@@ -5,5 +5,6 @@
         public string Name { get; set; }
         public string email { get; set; }
         public string Profile { get; set; }
+        public int ID { get; set; }
     }
 }

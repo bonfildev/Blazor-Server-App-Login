@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore;
 using Blazored.SessionStorage;
 using Microsoft.AspNetCore.Components.Authorization;
 using Blazor_Server_App_Login.Extensions;
+using Blazor_Server_App_Login.Interfaces;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +24,8 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddScoped<AuthenticationStateProvider, AuthenticationExt>();
 builder.Services.AddSingleton<WeatherForecastService>();
+//builder.Services.AddSingleton<ISDigito, SDigitoData>();
+builder.Services.AddScoped<ISDigito, SDigitoData>(); // Se usa en lugar de singleton porque da error el DbContext
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 

@@ -4,6 +4,8 @@ using Blazor_Server_App_Login.Login;
 using Blazor_Server_App_Login.Data;
 using Microsoft.EntityFrameworkCore;
 using Blazor_Server_App_Login.Models;
+using System;
+using Blazor_Server_App_Login.Pages;
 
 namespace Blazor_Server_App_Login.Controllers
 {
@@ -52,6 +54,59 @@ namespace Blazor_Server_App_Login.Controllers
                     await _context.SaveChangesAsync();
                     return StatusCode(StatusCodes.Status200OK);
                 }
+            }
+            return StatusCode(StatusCodes.Status500InternalServerError);
+        }
+
+        [HttpPost]
+        [Route("SDigito")]
+        public async Task<IActionResult> SDigito([FromBody] sDigito sd)
+        {
+            if (ModelState.IsValid)
+            {
+                long aux = CalcSuperDigit(sd.Number);
+                sd.Result = Int16.Parse(aux.ToString());
+                sd.email = null;
+                sd.Date = System.DateTime.Now;
+                _context.Add(sd);
+                await _context.SaveChangesAsync();
+                return StatusCode(StatusCodes.Status200OK);
+            }
+            return StatusCode(StatusCodes.Status500InternalServerError);
+        }
+        public long CalcSuperDigit(long val)
+        {
+            long suma = 0;
+            if (val.ToString().Length == 1)
+            {
+                return val;
+            }
+            else
+            {
+                foreach (char c in val.ToString())
+                {
+                    string aux= c.ToString();
+                    suma += Int16.Parse(aux);
+                }
+                return CalcSuperDigit(suma);
+            }
+        }
+        [HttpPost]
+        [Route("BorrarSDigito")]
+        public async Task<IActionResult> BorrarSDigito([FromBody] int id)
+        {
+            if (ModelState.IsValid)
+            {
+                var persons = _context.SDigito.Where(a => a.UserId.Equals(id)).ToList();
+                if (persons != null)
+                {
+                    foreach(sDigito s in persons)
+                    {
+                        _context.SDigito.Remove(s);
+                    }
+                }
+                await _context.SaveChangesAsync();
+                return StatusCode(StatusCodes.Status200OK);
             }
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
